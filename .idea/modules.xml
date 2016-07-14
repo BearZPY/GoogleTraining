@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GoogleTraining.iml" filepath="$PROJECT_DIR$/GoogleTraining.iml" />
       <module fileurl="file://$PROJECT_DIR$/activitylifecycle/activitylifecycle.iml" filepath="$PROJECT_DIR$/activitylifecycle/activitylifecycle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fragments/fragments.iml" filepath="$PROJECT_DIR$/fragments/fragments.iml" />
       <module fileurl="file://$PROJECT_DIR$/myfirstapp/myfirstapp.iml" filepath="$PROJECT_DIR$/myfirstapp/myfirstapp.iml" />
     </modules>
   </component>
