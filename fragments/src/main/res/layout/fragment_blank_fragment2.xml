@@ -10,4 +10,12 @@
         android:layout_height="match_parent"
         android:text="This is Fragment2!" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go Back"
+        android:textAllCaps="false"
+        android:id="@+id/btn_back"
+        android:layout_gravity="center" />
+
 </FrameLayout>

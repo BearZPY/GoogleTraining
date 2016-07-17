@@ -49,7 +49,6 @@ public class MainActivity extends FragmentActivity {
                 // 然后将该事务添加到返回堆栈，以便用户可以向后导航
                 transaction.replace(R.id.fragment_container, newFragment);
                 transaction.addToBackStack(null);
-
                 // 执行事务
                 transaction.commit();
             }
