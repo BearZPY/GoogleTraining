@@ -1,1 +1,1 @@
-include ':myfirstapp', ':activitylifecycle', ':fragments'
+include ':myfirstapp', ':activitylifecycle', ':fragments', ':savedata'
