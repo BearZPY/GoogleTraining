@@ -1,8 +1,26 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
 /build
 /captures
+
+
+# built application files
+*.ap_
+
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+
+
+# Intellij project files
+*.ipr
+*.iws
+/.idea/
+
