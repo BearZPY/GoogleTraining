@@ -16,9 +16,11 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         File path = getPublicDocumentStorageDir(fileName);
         File file = new File(path, fileName);
-        String value = "Hi! +++";
+        String value = "Hi!";
         try {
             OutputStream outputStream = new FileOutputStream(file);
             outputStream.write(value.getBytes());
@@ -139,11 +141,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         verifyStoragePermissions(this);
         try {
-            InputStream inputStream = new FileInputStream(file);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            value = bufferedReader.readLine();
+            bufferedReader.close();
+/*          InputStream inputStream = new FileInputStream(file);
             byte[] inCh = new byte[100];
             inputStream.read(inCh);
             value = inCh.toString();
             inputStream.close();
+*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,7 +226,9 @@ public class MainActivity extends AppCompatActivity {
         // Get the directory for the user's public document directory.
         File file = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
-
+        if(!file.exists())
+            if(!file.mkdirs())
+                return null;
         return file;
     }
 
