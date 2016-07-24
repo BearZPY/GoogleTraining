@@ -2,19 +2,19 @@ package learning.bear.savedata;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,12 +27,14 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SQLiteDatabase db;
+    //private FeedReaderDbHelper mDbHelper;
+    private Context mContext = this;
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,21 @@ public class MainActivity extends AppCompatActivity {
         testExternalPublicStorage();
         // 写入外部私有存储文件一个值并读取显示
         testExternalPrivateStorage();
+        //testSQLite(this);
+
+        Button button;
+        button =(Button)findViewById(R.id.button_new_db);
+        button.setOnClickListener(buttonClick);
+        button =(Button)findViewById(R.id.button_update_db);
+        button.setOnClickListener(buttonClick);
+        button =(Button)findViewById(R.id.button_insert_data);
+        button.setOnClickListener(buttonClick);
+        button =(Button)findViewById(R.id.button_update_db);
+        button.setOnClickListener(buttonClick);
+        button =(Button)findViewById(R.id.button_query_data);
+        button.setOnClickListener(buttonClick);
+        button =(Button)findViewById(R.id.button_delete_data);
+        button.setOnClickListener(buttonClick);
     }
 
     void testSharedPreferences() {
@@ -126,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         String fileName = getString(R.string.eStoragePublicFileName);
         if (!isExternalStorageWritable())
             return;
-        File path = getPublicDocumentStorageDir(fileName);
+        File path = getPublicDocumentStorageDir();
         File file = new File(path, fileName);
         String value = "Hi!";
         try {
@@ -190,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(string);
     }
 
+
+
     public File getTempFile(String fileName) {
         File file;
         try {
@@ -218,16 +237,18 @@ public class MainActivity extends AppCompatActivity {
         // Get the directory for the app's private document directory.
         File file = new File(this.getExternalFilesDir(
                 Environment.DIRECTORY_DOCUMENTS), documentName);
-        //file.mkdirs();
+        if (!file.exists())
+            if (!file.mkdirs())
+                return null;
         return file;
     }
 
-    public File getPublicDocumentStorageDir(String documentName) {
+    public File getPublicDocumentStorageDir() {
         // Get the directory for the user's public document directory.
         File file = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
-        if(!file.exists())
-            if(!file.mkdirs())
+        if (!file.exists())
+            if (!file.mkdirs())
                 return null;
         return file;
     }
@@ -240,21 +261,60 @@ public class MainActivity extends AppCompatActivity {
      * @param activity activity
      */
     public static void verifyStoragePermissions(Activity activity) {
-// Check if we have write permission
+        // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
-        // We don't have permission so prompt the user
+            // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE);
         }
         permission = ActivityCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
-        // We don't have permission so prompt the user
+            // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE);
         }
     }
 
+    View.OnClickListener buttonClick = new View.OnClickListener(){
+        @Override
+        public void onClick(View view){
+            switch (view.getId()){
+                case R.id.button_new_db:
+                    String path = "/data/data/learning.bear.savedata/databases/my_database.db";
+                    db=SQLiteDatabase.openOrCreateDatabase(path,null);
+                    //创建表SQL语句
+                    String stu_table="create table usertable(_id integer primary key autoincrement,sname text,snumber text)";
+                    //执行SQL语句
+                    db.execSQL(stu_table);
+                    //mDbHelper = new FeedReaderDbHelper(mContext);
+                    //db = mDbHelper.getWritableDatabase();
+                    break;
+                case R.id.button_update_db:
+                case R.id.button_insert_data:
+                    // Create a new map of values, where column names are the keys
+                    ContentValues values = new ContentValues();
+                    //values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID, "id");
+                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE, "title");
+                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_CONTENT, "content");
+
+                    // Insert the new row, returning the primary key value of the new row
+                    long newRowId;
+                    newRowId = db.insert(
+                            FeedReaderContract.FeedEntry.TABLE_NAME,
+                            null,
+                            //FeedReaderContract.FeedEntry.COLUMN_NAME_NULLABLE,
+                            values);
+                    break;
+                case R.id.button_update_data:
+                case R.id.button_query_data:
+                case R.id.button_delete_data:
+                default:break;
+            }
+        }
+    };
+
 }
+

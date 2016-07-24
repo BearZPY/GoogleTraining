@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,11 +7,67 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="learning.bear.savedata.MainActivity">
+    tools:context="learning.bear.savedata.MainActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_new_db"
+        android:id="@+id/button_new_db"
+        android:textAllCaps="false"
+        android:layout_marginEnd="39dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_update_db"
+        android:id="@+id/button_update_db"
+        android:textAllCaps="false"
+        android:layout_below="@+id/button_new_db"
+        android:layout_alignStart="@+id/button_new_db" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_insert_data"
+        android:id="@+id/button_insert_data"
+        android:textAllCaps="false"
+        android:layout_below="@+id/button_update_db"
+        android:layout_alignStart="@+id/button_update_db" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_update_data"
+        android:id="@+id/button_update_data"
+        android:textAllCaps="false"
+        android:layout_below="@+id/button_insert_data"
+        android:layout_alignStart="@+id/button_insert_data" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_query_data"
+        android:id="@+id/button_query_data"
+        android:textAllCaps="false"
+        android:layout_below="@+id/button_update_data"
+        android:layout_alignStart="@+id/button_update_data" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_delete_data"
+        android:id="@+id/button_delete_data"
+        android:textAllCaps="false"
+        android:layout_below="@+id/button_query_data"
+        android:layout_alignStart="@+id/button_query_data" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:id="@+id/showBootTimes"/>
-</RelativeLayout>
+</LinearLayout>
