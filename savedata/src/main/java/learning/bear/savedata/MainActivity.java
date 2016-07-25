@@ -27,9 +27,7 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SQLiteDatabase db;
-    //private FeedReaderDbHelper mDbHelper;
-    private Context mContext = this;
+    private Context mContext = MainActivity.this;
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(buttonClick);
         button =(Button)findViewById(R.id.button_insert_data);
         button.setOnClickListener(buttonClick);
-        button =(Button)findViewById(R.id.button_update_db);
+        button =(Button)findViewById(R.id.button_update_data);
         button.setOnClickListener(buttonClick);
         button =(Button)findViewById(R.id.button_query_data);
         button.setOnClickListener(buttonClick);
@@ -278,39 +276,95 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    SQLiteDatabase db;
+    FeedReaderDbHelper mDbHelper;
+    int entryID = 0;
+    ContentValues values;
+
     View.OnClickListener buttonClick = new View.OnClickListener(){
         @Override
         public void onClick(View view){
+            TextView textView = (TextView) findViewById(R.id.showBootTimes);
             switch (view.getId()){
                 case R.id.button_new_db:
-                    String path = "/data/data/learning.bear.savedata/databases/my_database.db";
-                    db=SQLiteDatabase.openOrCreateDatabase(path,null);
-                    //创建表SQL语句
-                    String stu_table="create table usertable(_id integer primary key autoincrement,sname text,snumber text)";
-                    //执行SQL语句
-                    db.execSQL(stu_table);
-                    //mDbHelper = new FeedReaderDbHelper(mContext);
-                    //db = mDbHelper.getWritableDatabase();
+                    mDbHelper = new FeedReaderDbHelper(mContext);
+                    db = mDbHelper.getReadableDatabase();
                     break;
                 case R.id.button_update_db:
+                    // 修改FeedReaderDbHelper中的版本号重新安装，自动更新
+                    String string = textView.getText().toString() +
+                            "\n修改FeedReaderDbHelper中的版本号重新安装，自动更新";
+                    textView.setText(string);
+                    break;
                 case R.id.button_insert_data:
+                    // Gets the data repository in write mode
+                    db = mDbHelper.getWritableDatabase();
                     // Create a new map of values, where column names are the keys
-                    ContentValues values = new ContentValues();
-                    //values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID, "id");
-                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE, "title");
-                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_CONTENT, "content");
-
+                    values = new ContentValues();
+                    entryID++;
+                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID,entryID);
+                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE,"This title is "+entryID+".");
                     // Insert the new row, returning the primary key value of the new row
-                    long newRowId;
-                    newRowId = db.insert(
+                    db.insert(
                             FeedReaderContract.FeedEntry.TABLE_NAME,
-                            null,
-                            //FeedReaderContract.FeedEntry.COLUMN_NAME_NULLABLE,
+                            FeedReaderContract.FeedEntry.COLUMN_NAME_NULLABLE,
                             values);
                     break;
                 case R.id.button_update_data:
+                    // Gets the data repository in write mode
+                    db = mDbHelper.getWritableDatabase();
+                    // New value for one column
+                    values = new ContentValues();
+                    values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE, "TEST");
+
+                    // Which row to update, based on the ID
+                    String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+                    String[] selectionArgs = { String.valueOf(entryID) };
+
+                    db.update(FeedReaderContract.FeedEntry.TABLE_NAME,
+                            values,
+                            selection,
+                            selectionArgs);
+                    break;
                 case R.id.button_query_data:
+                    // Define a projection that specifies which columns from the database
+                    // you will actually use after this query.
+                    String[] projection = {
+                            FeedReaderContract.FeedEntry._ID,
+                            FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID,
+                            FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE
+                    };
+                    String sortOrder =
+                            FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID + " DESC";
+
+                    Cursor cursor = db.query(
+                            FeedReaderContract.FeedEntry.TABLE_NAME,  // The table to query
+                            projection,                               // The columns to return
+                            "title like ?",                   // The columns for the WHERE clause
+                            new String[]{"%is 5%"},                            // The values for the WHERE clause
+                            null,                                     // don't group the rows
+                            null,                                     // don't filter by row groups
+                            sortOrder                                 // The sort order
+                    );
+
+                    cursor.moveToFirst();
+                    String string1 = textView.getText().toString() +
+                            "\nQuery SQL: " + cursor.getInt(0)+
+                            " - " + cursor.getInt(1)+
+                            " - " + cursor.getString(2);
+                    cursor.close();
+                    textView.setText(string1);
+                    break;
                 case R.id.button_delete_data:
+                    // Gets the data repository in write mode
+                    db = mDbHelper.getWritableDatabase();
+                    // Define 'where' part of query.
+                    String selectionDelete = FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+                    // Specify arguments in placeholder order.
+                    String[] selectionArgsDelete = { String.valueOf(entryID--) };
+                    // Issue SQL statement.
+                    db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, selectionDelete, selectionArgsDelete);
+                    break;
                 default:break;
             }
         }
