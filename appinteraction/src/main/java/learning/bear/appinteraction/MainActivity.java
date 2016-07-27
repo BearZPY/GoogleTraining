@@ -1,5 +1,6 @@
 package learning.bear.appinteraction;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -35,6 +36,29 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(buttonClick);
         button = (Button) findViewById(R.id.get_contact);
         button.setOnClickListener(buttonClick);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Get the intent that started this activity
+        Intent intent = getIntent();
+
+        if(!intent.getCategories().toString().equals("android.intent.category.LAUNCHER")||
+                !intent.getAction().equals("android.intent.action.MAIN"))
+            return;
+        Uri data = intent.getData();
+        // Figure out what to do based on the intent type
+        if (intent.getType().contains("image/")) {
+            // Handle intents with image data ...
+        } else if (intent.getType().equals("text/plain")) {
+            // Handle intents with text ...
+        }
+
+        // Create intent to deliver some kind of result data
+        //Intent result = new Intent("com.example.RESULT_ACTION", Uri.parse("content://result_uri");
+        //setResult(Activity.RESULT_OK, result);
+        //finish();
     }
 
     View.OnClickListener buttonClick = new View.OnClickListener() {
