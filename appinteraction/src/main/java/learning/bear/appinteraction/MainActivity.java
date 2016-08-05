@@ -1,6 +1,6 @@
 package learning.bear.appinteraction;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,47 +44,24 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Get the intent that started this activity
         Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
 
-        if(!intent.getCategories().toString().equals("android.intent.category.LAUNCHER")||
-                !intent.getAction().equals("android.intent.action.MAIN"))
-            return;
-        Uri data = intent.getData();
-        // Figure out what to do based on the intent type
-        if (intent.getType().contains("image/")) {
-            // Handle intents with image data ...
-        } else if (intent.getType().equals("text/plain")) {
-            // Handle intents with text ...
+        if(Intent.ACTION_SEND.equals(action) && type != null){
+            if(type.startsWith("text/plain")){
+                handleSendText(intent); // Handle text being sent
+            }else if (type.startsWith("image/")) {
+                handleSendImage(intent); // Handle single image being sent
+            }if (type.startsWith("image/")) {
+                handleSendMultipleImages(intent); // Handle multiple images being sent
+            }
+        }else if(Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null){
+
+        }else {
+
         }
-
-        // Create intent to deliver some kind of result data
-        //Intent result = new Intent("com.example.RESULT_ACTION", Uri.parse("content://result_uri");
-        //setResult(Activity.RESULT_OK, result);
-        //finish();
     }
 
-    View.OnClickListener buttonClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.open_google:
-                    openGoogle();
-                    break;
-                case R.id.call_tel:
-                    callTel();
-                    break;
-                case R.id.open_map:
-                    openMap();
-                    break;
-                case R.id.send_email:
-                    sendEmail();
-                    break;
-                case R.id.get_contact:
-                    getContact();
-                    break;
-                default:break;
-            }
-        }
-    };
 
     void openGoogle(){
         Uri webPage = Uri.parse("http://www.google.com");
@@ -160,6 +138,27 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
     }
 
+    void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            // Update UI to reflect text being shared
+        }
+    }
+
+    void handleSendImage(Intent intent) {
+        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            // Update UI to reflect image being shared
+        }
+    }
+
+    void handleSendMultipleImages(Intent intent) {
+        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (imageUris != null) {
+            // Update UI to reflect multiple images being shared
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -199,4 +198,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    View.OnClickListener buttonClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.open_google:
+                    openGoogle();
+                    break;
+                case R.id.call_tel:
+                    callTel();
+                    break;
+                case R.id.open_map:
+                    openMap();
+                    break;
+                case R.id.send_email:
+                    sendEmail();
+                    break;
+                case R.id.get_contact:
+                    getContact();
+                    break;
+                default:break;
+            }
+        }
+    };
+
 }
