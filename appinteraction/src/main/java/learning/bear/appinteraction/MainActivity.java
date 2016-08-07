@@ -6,25 +6,27 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.support.v7.widget.ShareActionProvider;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        ShareActionProvider.OnShareTargetSelectedListener{
 
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
     private ShareActionProvider shareActionProvider
-            = new ShareActionProvider(this);
+            = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,11 +172,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Check which request it is that we're responding to
+
         if (requestCode == PICK_CONTACT_REQUEST) {
-            // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                // Get the URI that points to the selected contact
                 Uri contactUri = data.getData();
                 // We only need the NUMBER column, because there will be only one row in the result
                 String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};
@@ -214,8 +214,17 @@ public class MainActivity extends AppCompatActivity {
 
         shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
-        //shareActionProvider.setOnShareTargetSelectedListener(this);
+        shareActionProvider.setOnShareTargetSelectedListener(this);
         return (super.onCreateOptionsMenu(menu));
+    }
+
+
+    @Override
+    public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+
+        Toast.makeText(this,"Selected",
+                Toast.LENGTH_LONG).show();
+        return false;
     }
 
     private void setShareIntent(Intent shareIntent){

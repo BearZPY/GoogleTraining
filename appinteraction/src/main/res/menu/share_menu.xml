@@ -7,9 +7,8 @@
         android:title="Share"
         android:icon="@mipmap/ic_launcher"
         app:showAsAction="ifRoom"
-        android:actionProviderClass=
-            "android.support.v7.widget.ShareActionProvider">
-    </item>
+        app:actionProviderClass=
+            "android.support.v7.widget.ShareActionProvider"/>
 
 </menu>
 
