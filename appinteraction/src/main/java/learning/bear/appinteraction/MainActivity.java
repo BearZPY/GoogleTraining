@@ -7,12 +7,15 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.support.v7.widget.ShareActionProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
+    private ShareActionProvider shareActionProvider
+            = new ShareActionProvider(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(buttonClick);
         button = (Button) findViewById(R.id.get_contact);
         button.setOnClickListener(buttonClick);
+
+
     }
 
     @Override
@@ -199,6 +206,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.share_menu,menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        //shareActionProvider.setOnShareTargetSelectedListener(this);
+        return (super.onCreateOptionsMenu(menu));
+    }
+
+    private void setShareIntent(Intent shareIntent){
+        if(shareActionProvider != null)
+            shareActionProvider.setShareIntent(shareIntent);
+    }
+
     View.OnClickListener buttonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -213,7 +237,13 @@ public class MainActivity extends AppCompatActivity {
                     openMap();
                     break;
                 case R.id.send_email:
-                    sendEmail();
+                    //sendEmail();
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT,"Test ShareActionProvider!\n");
+
+                    setShareIntent(shareIntent);
                     break;
                 case R.id.get_contact:
                     getContact();
