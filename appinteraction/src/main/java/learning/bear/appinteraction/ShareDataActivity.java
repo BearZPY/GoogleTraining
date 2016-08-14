@@ -60,6 +60,43 @@ public class ShareDataActivity extends AppCompatActivity {
         }
     }
 
+    void callTel(){
+        Uri number = Uri.parse("tel:10000");
+        Intent intent = new Intent(Intent.ACTION_DIAL, number);
+
+        // Verify it resolves
+        // 确保有APP可以接受这个Intent
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
+        boolean isIntentSafe = activities.size() > 0;
+
+        // Start an activity if it's safe
+        if (isIntentSafe) {
+            String title = getResources().getText(R.string.chooser_title).toString();
+            // 始终显示选择应用
+            startActivity(Intent.createChooser(intent,title));
+        }
+    }
+
+
+    void openMap(){
+        Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
+        Intent intent = new Intent(Intent.ACTION_VIEW, location);
+
+        // Verify it resolves
+        // 确保有APP可以接受这个Intent
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
+        boolean isIntentSafe = activities.size() > 0;
+
+        // Start an activity if it's safe
+        if (isIntentSafe) {
+            String title = getResources().getText(R.string.chooser_title).toString();
+            // 始终显示选择应用
+            startActivity(Intent.createChooser(intent,title));
+        }
+    }
+
     View.OnClickListener buttonClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -84,7 +121,7 @@ public class ShareDataActivity extends AppCompatActivity {
                     //setShareIntent(shareIntent);
                     break;
                 case R.id.get_contact:
-                    getContact();
+                    //getContact();
                     break;
                 default:break;
             }
