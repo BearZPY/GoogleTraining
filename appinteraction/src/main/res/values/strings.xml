@@ -7,6 +7,6 @@
     <string name="send_email">Send Email</string>
     <string name="get_contact">Get Contact</string>
     <string name="chooser_title">choose other app</string>
-
-
+    <string name="button_share_data">Share Data</string>
+    <string name="button_share_file">Share File</string>
 </resources>

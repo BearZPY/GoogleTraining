@@ -30,7 +30,8 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".ShareFileActivity"></activity>
+        <activity android:name=".ShareFileActivity" />
+        <activity android:name=".ShareDataActivity"></activity>
     </application>
 
 </manifest>

@@ -2,51 +2,58 @@ package learning.bear.appinteraction;
 
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements
-        ShareActionProvider.OnShareTargetSelectedListener{
-
-    static final int PICK_CONTACT_REQUEST = 1;  // The request code
-    private ShareActionProvider shareActionProvider
-            = null;
+public class MainActivity extends AppCompatActivity{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Button button;
-        button = (Button) findViewById(R.id.open_google);
-        button.setOnClickListener(buttonClick);
-        button = (Button) findViewById(R.id.call_tel);
-        button.setOnClickListener(buttonClick);
-        button = (Button) findViewById(R.id.open_map);
-        button.setOnClickListener(buttonClick);
-        button = (Button) findViewById(R.id.send_email);
-        button.setOnClickListener(buttonClick);
-        button = (Button) findViewById(R.id.get_contact);
-        button.setOnClickListener(buttonClick);
-
-
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // UI
+        Button button = (Button) findViewById(R.id.share_data);
+        if(button!=null)
+            button.setOnClickListener(buttonClick);
+        button = (Button) findViewById(R.id.share_file);
+        if(button!=null)
+            button.setOnClickListener(buttonClick);
+    }
+
+    View.OnClickListener buttonClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()){
+                case R.id.share_data:
+                {
+                    Intent intent = new Intent(MainActivity.this,ShareDataActivity.class);
+                    startActivity(intent);
+                }
+                    break;
+                case R.id.share_file:
+                {
+                    Intent intent = new Intent(MainActivity.this,ShareFileActivity.class);
+                    startActivity(intent);
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+}
+
+
+/*
 
     @Override
     protected void onStart() {
@@ -232,34 +239,6 @@ public class MainActivity extends AppCompatActivity implements
             shareActionProvider.setShareIntent(shareIntent);
     }
 
-    View.OnClickListener buttonClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.open_google:
-                    openGoogle();
-                    break;
-                case R.id.call_tel:
-                    callTel();
-                    break;
-                case R.id.open_map:
-                    openMap();
-                    break;
-                case R.id.send_email:
-                    //sendEmail();
-                    Intent shareIntent = new Intent();
-                    shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_TEXT,"Test ShareActionProvider!\n");
-
-                    setShareIntent(shareIntent);
-                    break;
-                case R.id.get_contact:
-                    getContact();
-                    break;
-                default:break;
-            }
-        }
-    };
 
 }
+*/
