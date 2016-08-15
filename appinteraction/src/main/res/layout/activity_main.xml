@@ -21,6 +21,11 @@
         android:textAllCaps="false"
         android:id="@+id/share_file" />
 
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_share_action_bar"
+        android:textAllCaps="false"
+        android:id="@+id/share_action_bar" />
 
 </LinearLayout>

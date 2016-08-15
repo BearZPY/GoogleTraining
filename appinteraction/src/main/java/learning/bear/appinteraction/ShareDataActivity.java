@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShareDataActivity extends AppCompatActivity {
+
+    private static final int PICK_CONTACT_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,22 @@ public class ShareDataActivity extends AppCompatActivity {
             button.setOnClickListener(buttonClick);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode){
+            case PICK_CONTACT_REQUEST:
+                if(RESULT_OK == resultCode)
+                    Toast.makeText(this, "获取的号码:"+getContactNumber(data)
+                            , Toast.LENGTH_LONG).show();
+                if(RESULT_CANCELED == resultCode)
+                    Toast.makeText(this, "用户取消操作", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
+        }
+    }
 
     void openGoogle(){
         Uri webPage = Uri.parse("http://www.google.com");
@@ -85,7 +105,6 @@ public class ShareDataActivity extends AppCompatActivity {
         }
     }
 
-
     void openGoogleMap(){
         Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
         Intent intent = new Intent(Intent.ACTION_VIEW, location);
@@ -98,16 +117,15 @@ public class ShareDataActivity extends AppCompatActivity {
 
         // Start an activity if it's safe
         if (isIntentSafe) {
-            String title = getResources().getText(R.string.chooser_title).toString();
+            //String title = getResources().getText(R.string.chooser_title).toString();
             // 始终显示选择应用
-            startActivity(Intent.createChooser(intent,title));
+            startActivity(Intent.createChooser(intent,"Choose Google Map"));
         }
     }
 
-
     void openAMap(){
         // 经度：116.39722824； 纬度：39.91724124
-        Uri location = Uri.parse("androidamap://viewMap?sourceApplication=App Interaction&poiname=地图标点&lat=39.9&lon=116.3&dev=0");
+        Uri location = Uri.parse("androidamap://viewMap?sourceApplication=App Interaction&poiname=地图标点&lat=39.9&lon=116.4&dev=0");
         Intent intent = new Intent(Intent.ACTION_VIEW, location);
         String title = getResources().getText(R.string.chooser_title).toString();
 
@@ -122,6 +140,54 @@ public class ShareDataActivity extends AppCompatActivity {
             intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(Intent.createChooser(intent,title));
         }
+    }
+
+    void sendEmail(){
+        //此处必须是mailto
+        Uri emailUri = Uri.fromParts("mailto","test@example.com",null);
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO,emailUri);
+
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Email subject");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message text");
+        startActivity(Intent.createChooser(emailIntent, "Send Email"));
+    }
+
+    // 启动联系人目前，选择联系人，获取号码
+    void getContact(){
+        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+    }
+
+    // 从返回的data中读取联系人号码
+    String getContactNumber(Intent data){
+        Uri contactUri = data.getData();
+        // We only need the NUMBER column, because there will be only one row in the result
+        String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};
+
+        // Perform the query on the contact to get the NUMBER column
+        // We don't need a selection or sort order (there's only one result for the given URI)
+        // CAUTION: The query() method should be called from a separate thread to avoid blocking
+        // your app's UI thread. (For simplicity of the sample, this code doesn't do that.)
+        // Consider using CursorLoader to perform the query.
+        Cursor cursor = getContentResolver()
+                .query(contactUri, projection, null, null, null);
+        String number;
+        try{
+            if( cursor == null)
+                return null;
+            cursor.moveToFirst();
+            // Retrieve the phone number from the NUMBER column
+            int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            number = cursor.getString(column);
+            cursor.close();
+            // Do something with the phone number...
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return number;
     }
 
     View.OnClickListener buttonClick = new View.OnClickListener() {
@@ -142,16 +208,10 @@ public class ShareDataActivity extends AppCompatActivity {
                     openAMap();
                     break;
                 case R.id.send_email:
-                    //sendEmail();
-                    //Intent shareIntent = new Intent();
-                    //shareIntent.setAction(Intent.ACTION_SEND);
-                    //shareIntent.setType("text/plain");
-                    //shareIntent.putExtra(Intent.EXTRA_TEXT,"Test ShareActionProvider!\n");
-
-                    //setShareIntent(shareIntent);
+                    sendEmail();
                     break;
                 case R.id.get_contact:
-                    //getContact();
+                    getContact();
                     break;
                 default:break;
             }

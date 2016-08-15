@@ -31,7 +31,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".ShareFileActivity" />
-        <activity android:name=".ShareDataActivity"></activity>
+        <activity android:name=".ShareDataActivity" />
+        <activity android:name=".ActionBarActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/button_share_action_bar">
+
+        </activity>
     </application>
 
 </manifest>

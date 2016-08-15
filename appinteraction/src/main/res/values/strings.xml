@@ -10,4 +10,5 @@
     <string name="chooser_title">Choose One App</string>
     <string name="button_share_data">Share Data</string>
     <string name="button_share_file">Share File</string>
+    <string name="button_share_action_bar">Share ActonBar</string>
 </resources>
