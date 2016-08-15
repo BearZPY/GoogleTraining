@@ -18,6 +18,7 @@ public class ActionBarActivity extends AppCompatActivity {
 
     ShareActionProvider shareActionProvider;
     Intent shareIntent = new Intent();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,13 +27,12 @@ public class ActionBarActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(null == actionBar)
             return ;
-        actionBar.setLogo(R.mipmap.ic_launcher);
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(buttonClick);
-        button = (Button) findViewById(R.id.button2);
-        button.setOnClickListener(buttonClick);
+        Button button = (Button) findViewById(R.id.button_setWeb);
+        if(button != null)
+            button.setOnClickListener(buttonClick);
+        button = (Button) findViewById(R.id.button_setImage);
+        if(button != null)
+            button.setOnClickListener(buttonClick);
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
     }
@@ -40,22 +40,12 @@ public class ActionBarActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.share_menu,menu);
-        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-        shareActionProvider = (ShareActionProvider)MenuItemCompat.getActionProvider(shareItem);
-        shareActionProvider.setShareIntent(Intent.createChooser(shareIntent,"share"));
         return (super.onCreateOptionsMenu(menu));
-    }
-
-    Intent getDefaultIntent() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        return Intent.createChooser(intent,"Share");
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.share_menu,menu);
         MenuItem shareItem = menu.findItem(R.id.menu_item_share);
@@ -68,7 +58,7 @@ public class ActionBarActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             switch(v.getId()){
-                case R.id.button:
+                case R.id.button_setImage:
                 {
                     shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
@@ -76,7 +66,7 @@ public class ActionBarActivity extends AppCompatActivity {
                     invalidateOptionsMenu();
                 }
                 break;
-                case R.id.button2:
+                case R.id.button_setWeb:
                 {
                     Uri webPage = Uri.parse("http://www.google.com");
                     shareIntent = new Intent(Intent.ACTION_VIEW, webPage);

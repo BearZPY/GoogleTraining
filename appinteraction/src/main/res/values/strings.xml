@@ -11,4 +11,8 @@
     <string name="button_share_data">Share Data</string>
     <string name="button_share_file">Share File</string>
     <string name="button_share_action_bar">Share ActonBar</string>
+
+    <string name="button_action_bar_setWeb">Share Web</string>
+    <string name="button_action_bar_setImage">Share Image</string>
+
 </resources>
