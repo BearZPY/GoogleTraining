@@ -1,0 +1,53 @@
+.open headphones.db
+
+.tables
+
+// 查看创建语句
+.schema headphones
+
+.mode ascii
+
+.header on
+.mode column
+
+
+CREATE TABLE headphones (
+    _id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    price INTEGER,
+    style INTEGER NOT NULL,
+    in_stock INTEGER DEFAULT 0,
+    description TEXT DEFAULT unknown
+    );
+
+PRAGMA TABLE_INFO(headphones);
+
+DROP TABLE headphones;
+
+SELECT <columns> FROM <table_name>;
+
+SELECT * FROM headphones;
+
+SELECT * FROM headphones WHERE _id == 1;
+
+SELECT name FROM headphones;
+
+SELECT * FROM headphones ORDER BY name ASC;
+
+SELECT * FROM headphones ORDER BY name DESC;
+
+SELECT name,price FROM headphones WHERE description != "unknown"ORDER BY name DESC;
+
+INSERT INTO headphones (name,price,style,in_stock)
+    VALUES ("mytestcase",0,0,1);
+
+UPDATE headphones SET name = "toupdate" WHERE _id = 6;
+
+UPDATE headphones SET price = 100;
+
+DELETE FROM headphones WHERE _id = 5;
+
+DELETE FROM headphones;
+
+
+
