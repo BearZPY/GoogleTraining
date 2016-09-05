@@ -1,16 +1,27 @@
+----------------------------------------------------------------
+sqlite3 操作
+
+//打开创建数据库
 .open headphones.db
 
+//查看数据库里存在的表
 .tables
 
-// 查看创建语句
+//查看创建数据库时语句
 .schema headphones
 
+//ascii模式显示
 .mode ascii
 
+//打开列名称显示
 .header on
+//按列对齐
 .mode column
 
+---------------------------------------------------------------
+结构化数据库语句
 
+创建表
 CREATE TABLE headphones (
     _id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -20,33 +31,47 @@ CREATE TABLE headphones (
     description TEXT DEFAULT unknown
     );
 
+显示表的列名称属性
 PRAGMA TABLE_INFO(headphones);
 
+删除整个表
 DROP TABLE headphones;
 
+从表中选择某列
 SELECT <columns> FROM <table_name>;
 
+选择表的所有内容
 SELECT * FROM headphones;
 
+选择 _id == 1 的所有行内容
 SELECT * FROM headphones WHERE _id == 1;
 
+只选择名字那一列
 SELECT name FROM headphones;
 
+选择表的所有内容 按名称升序排列
 SELECT * FROM headphones ORDER BY name ASC;
 
+选择表的所有内容 按名称降序排列
 SELECT * FROM headphones ORDER BY name DESC;
 
-SELECT name,price FROM headphones WHERE description != "unknown"ORDER BY name DESC;
+选择表里description列中值为unknown的行 按名称降序排列
+SELECT name,price FROM headphones WHERE description != "unknown" ORDER BY name DESC;
 
+插入对应的数据
 INSERT INTO headphones (name,price,style,in_stock)
     VALUES ("mytestcase",0,0,1);
 
+更新 _id = 6 列中的 name 为 toupdate
 UPDATE headphones SET name = "toupdate" WHERE _id = 6;
 
+更新所有的 price 为 100
 UPDATE headphones SET price = 100;
 
+删除 _id = 5 的行
 DELETE FROM headphones WHERE _id = 5;
 
+删除表里面所有的内容
 DELETE FROM headphones;
 
 
